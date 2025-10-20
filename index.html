@@ -1,1 +1,1371 @@
-. 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sabor & Essência — Alimentação Consciente</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --olive: #6b8e23;
+      --sage: #87a96b;
+      --terracotta: #e2725b;
+      --warm-beige: #f5f5dc;
+      --deep-green: #2e8b57;
+      --cream: #fffdd0;
+      --white: #ffffff;
+      --text: #4a4a4a;
+      --text-light: #7a7a7a;
+      --trans: 700ms;
+      --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
+      --shadow-md: 0 8px 30px rgba(0,0,0,0.12);
+      --shadow-lg: 0 15px 40px rgba(0,0,0,0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', Arial, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background-color: var(--cream);
+      overflow: hidden;
+    }
+
+    .slider {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--cream);
+    }
+
+    .slides {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Base slide */
+    .slide {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      padding: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform: translateX(100%);
+      opacity: 0;
+      transition: transform var(--trans) cubic-bezier(0.16, 1, 0.3, 1), 
+                  opacity var(--trans) ease;
+    }
+
+    .slide.active {
+      transform: translateX(0);
+      opacity: 1;
+      z-index: 2;
+    }
+
+    /* Background patterns and gradients */
+    .slide:nth-child(odd) {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--warm-beige) 100%);
+    }
+
+    .slide:nth-child(even) {
+      background: linear-gradient(135deg, var(--warm-beige) 0%, var(--cream) 100%);
+    }
+
+    .slide--title {
+      background: linear-gradient(135deg, var(--deep-green) 0%, var(--olive) 50%, var(--sage) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide--title::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(107, 142, 35, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(226, 114, 91, 0.08) 0%, transparent 50%);
+      z-index: 1;
+    }
+
+    /* Content layout */
+    .content-wrap {
+      display: flex;
+      gap: 80px;
+      align-items: center;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 3;
+    }
+
+    .content-wrap.column {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 40px;
+    }
+
+    .text {
+      flex: 1;
+      max-width: 700px;
+    }
+
+    /* Headings */
+    h2 {
+      font-size: 42px;
+      color: var(--deep-green);
+      margin-bottom: 24px;
+      font-weight: 700;
+      position: relative;
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    h2::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: var(--terracotta);
+      margin-top: 16px;
+      border-radius: 2px;
+      animation: expandWidth 0.8s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    h3 {
+      font-size: 26px;
+      color: var(--deep-green);
+      margin: 24px 0 16px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 20px;
+      animation: fadeIn 0.8s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .lead-text {
+      font-size: 22px;
+      color: var(--text-light);
+      max-width: 800px;
+      font-weight: 300;
+    }
+
+    .highlight-text {
+      background: linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, rgba(107, 142, 35, 0.1) 100%);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      margin: 24px 0;
+      font-size: 18px;
+      border-left: 4px solid var(--terracotta);
+      box-shadow: var(--shadow-sm);
+      animation: fadeInUp 0.8s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* Title slide */
+    .slide--title .title-wrap {
+      position: relative;
+      z-index: 3;
+      padding: 0 24px;
+      max-width: 900px;
+      text-align: center;
+    }
+
+    .slide--title h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 64px;
+      color: var(--white);
+      line-height: 1.05;
+      margin: 0;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .slide--title span {
+      display: block;
+      font-size: 48px;
+      color: var(--warm-beige);
+      animation: fadeInUp 1s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .subtitle {
+      font-size: 24px;
+      color: rgba(255,255,255,0.85);
+      margin-top: 20px;
+      font-weight: 300;
+      animation: fadeInUp 1s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* Icon circles */
+    .icon-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-lg);
+      background: linear-gradient(135deg, var(--deep-green), var(--olive));
+      animation: fadeInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .icon-circle::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      background: linear-gradient(135deg, var(--terracotta), #d2691e);
+      z-index: -1;
+      border-radius: 50%;
+      opacity: 0.2;
+    }
+
+    .icon-circle i {
+      font-size: 50px;
+      color: var(--warm-beige);
+    }
+
+    /* Lists */
+    .features, .bullet {
+      margin-left: 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .features li, .bullet li {
+      margin-bottom: 18px;
+      font-size: 18px;
+      padding-left: 40px;
+      position: relative;
+      animation: fadeInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .features li:nth-child(1) { animation-delay: 0.2s; }
+    .features li:nth-child(2) { animation-delay: 0.4s; }
+    .features li:nth-child(3) { animation-delay: 0.6s; }
+    .features li:nth-child(4) { animation-delay: 0.8s; }
+    .features li:nth-child(5) { animation-delay: 1s; }
+
+    .bullet li:nth-child(1) { animation-delay: 0.2s; }
+    .bullet li:nth-child(2) { animation-delay: 0.4s; }
+    .bullet li:nth-child(3) { animation-delay: 0.6s; }
+    .bullet li:nth-child(4) { animation-delay: 0.8s; }
+
+    .features li::before, .bullet li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 24px;
+      height: 24px;
+      background-color: var(--terracotta);
+      border-radius: 50%;
+      opacity: 0.15;
+    }
+
+    .feature-icon {
+      margin-right: 12px;
+      font-size: 20px;
+      color: var(--terracotta);
+    }
+
+    /* Highlight boxes */
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, rgba(107, 142, 35, 0.1) 100%);
+      padding: 24px;
+      border-radius: var(--radius-md);
+      margin-top: 28px;
+      border-left: 4px solid var(--terracotta);
+      box-shadow: var(--shadow-sm);
+      animation: fadeInUp 0.8s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .highlight-box p {
+      margin: 0;
+      font-style: italic;
+      color: var(--deep-green);
+    }
+
+    /* Stats grids */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: 700px;
+      margin: 28px 0;
+    }
+
+    .stat-item {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--terracotta);
+    }
+
+    .stat-item:nth-child(1) { animation-delay: 0.2s; }
+    .stat-item:nth-child(2) { animation-delay: 0.4s; }
+    .stat-item:nth-child(3) { animation-delay: 0.6s; }
+
+    .stat-item:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-number {
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--deep-green);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 16px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* Community stats */
+    .community-stats {
+      display: flex;
+      gap: 16px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: linear-gradient(135deg, var(--terracotta), #d2691e);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .stat-pill:nth-child(1) { animation-delay: 0.2s; }
+    .stat-pill:nth-child(2) { animation-delay: 0.4s; }
+    .stat-pill:nth-child(3) { animation-delay: 0.6s; }
+
+    /* Work grid */
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      width: 100%;
+      margin-top: 32px;
+    }
+
+    .work-card {
+      background: white;
+      padding: 32px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .work-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--terracotta);
+    }
+
+    .work-card:nth-child(1) { animation-delay: 0.2s; }
+    .work-card:nth-child(2) { animation-delay: 0.4s; }
+
+    .work-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .work-icon {
+      font-size: 40px;
+      margin-bottom: 20px;
+      color: var(--terracotta);
+    }
+
+    .work-card h3 {
+      color: var(--deep-green);
+      margin-bottom: 16px;
+      font-size: 22px;
+    }
+
+    .work-card p {
+      font-size: 16px;
+      color: var(--text-light);
+    }
+
+    /* Timeline */
+    .timeline-container {
+      position: relative;
+      margin: 28px 0;
+      padding-left: 40px;
+    }
+
+    .timeline-container::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: rgba(139, 69, 19, 0.2);
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 32px;
+      animation: fadeInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .timeline-item:nth-child(1) { animation-delay: 0.2s; }
+    .timeline-item:nth-child(2) { animation-delay: 0.4s; }
+    .timeline-item:nth-child(3) { animation-delay: 0.6s; }
+
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -46px;
+      top: 5px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      border: 4px solid white;
+      box-shadow: 0 0 0 3px var(--terracotta);
+    }
+
+    .year {
+      font-weight: 700;
+      color: var(--deep-green);
+      font-size: 20px;
+    }
+
+    .event {
+      color: var(--text);
+      margin-top: 6px;
+    }
+
+    /* Culture grid */
+    .culture-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      width: 100%;
+      margin-top: 28px;
+    }
+
+    .culture-card {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .culture-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--terracotta);
+    }
+
+    .culture-card:nth-child(1) { animation-delay: 0.2s; }
+    .culture-card:nth-child(2) { animation-delay: 0.4s; }
+    .culture-card:nth-child(3) { animation-delay: 0.6s; }
+    .culture-card:nth-child(4) { animation-delay: 0.8s; }
+
+    .culture-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .culture-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+      color: var(--terracotta);
+    }
+
+    .culture-card h3 {
+      color: var(--deep-green);
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .culture-card p {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    /* Authors */
+    .authors {
+      margin-top: 32px;
+      font-family: 'Inter', sans-serif;
+      color: rgba(255,255,255,0.9);
+      text-align: center;
+      animation: fadeInUp 1s 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .authors-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--warm-beige);
+    }
+
+    .authors-names {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    /* Controls */
+    .controls {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      z-index: 10;
+    }
+
+    .controls button {
+      background: var(--deep-green);
+      color: white;
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .controls button:hover {
+      background: var(--terracotta);
+      transform: scale(1.1);
+    }
+
+    .controls button i {
+      font-size: 24px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 16px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border: none;
+    }
+
+    .dot.active {
+      background: var(--warm-beige);
+      transform: scale(1.4);
+    }
+
+    /* Food elements */
+    .food-elements {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .food-element {
+      position: absolute;
+      opacity: 0.1;
+      animation: float 20s infinite linear;
+    }
+
+    .food-element:nth-child(1) {
+      font-size: 100px;
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .food-element:nth-child(2) {
+      font-size: 150px;
+      top: 70%;
+      left: 80%;
+      animation-delay: -5s;
+    }
+
+    .food-element:nth-child(3) {
+      font-size: 70px;
+      top: 50%;
+      left: 5%;
+      animation-delay: -10s;
+    }
+
+    .food-element:nth-child(4) {
+      font-size: 120px;
+      top: 20%;
+      left: 85%;
+      animation-delay: -15s;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { 
+        opacity: 0; 
+      }
+      to { 
+        opacity: 1; 
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes expandWidth {
+      from {
+        width: 0;
+      }
+      to {
+        width: 80px;
+      }
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(20px, 30px) rotate(90deg);
+      }
+      50% {
+        transform: translate(0, 60px) rotate(180deg);
+      }
+      75% {
+        transform: translate(-20px, 30px) rotate(270deg);
+      }
+      100% {
+        transform: translate(0, 0) rotate(360deg);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .content-wrap {
+        gap: 60px;
+      }
+      
+      .slide {
+        padding: 50px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .work-grid, .culture-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .slide {
+        padding: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide {
+        padding: 30px 20px;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+      
+      .content-wrap {
+        flex-direction: column;
+        gap: 40px;
+      }
+      
+      .text {
+        max-width: 100%;
+      }
+      
+      .icon-circle {
+        width: 100px;
+        height: 100px;
+      }
+      
+      .icon-circle i {
+        font-size: 36px;
+      }
+      
+      h2 {
+        font-size: 32px;
+      }
+      
+      h3 {
+        font-size: 22px;
+      }
+      
+      p, .features li, .bullet li {
+        font-size: 16px;
+      }
+      
+      .slide--title h1 {
+        font-size: 48px;
+      }
+      
+      .slide--title span {
+        font-size: 36px;
+      }
+      
+      .subtitle {
+        font-size: 20px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .controls {
+        bottom: 20px;
+      }
+      
+      .controls button {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .dot {
+        width: 12px;
+        height: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .slide {
+        padding: 24px 16px;
+      }
+      
+      .controls {
+        bottom: 16px;
+      }
+      
+      .controls button {
+        width: 44px;
+        height: 44px;
+      }
+      
+      .dot {
+        width: 10px;
+        height: 10px;
+      }
+      
+      .slide--title h1, .slide--title span {
+        font-size: 36px;
+      }
+      
+      .subtitle {
+        font-size: 18px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .work-grid, .culture-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="slider" aria-roledescription="carousel">
+    <div class="slides" id="slides">
+    
+      <!-- SLIDE 1: Título com logo e nomes -->
+      <section class="slide slide--title" data-index="0" aria-hidden="false">
+        <div class="food-elements">
+          <div class="food-element">🥑</div>
+          <div class="food-element">🍋</div>
+          <div class="food-element">🌿</div>
+          <div class="food-element">🥦</div>
+        </div>
+        <div class="title-wrap">
+          <h1>SABOR & ESSÊNCIA<br><span>Alimentação Consciente</span></h1>
+          <div class="subtitle">Nutrindo corpo e alma com sabores autênticos</div>
+          <div class="authors">
+            <div class="authors-title">Equipe:</div>
+            <div class="authors-names">
+              Maria Santos, João Silva, Ana Oliveira,<br>
+              Pedro Costa, Carla Rodrigues, Lucas Almeida
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: Apresentação da Empresa -->
+      <section class="slide" data-index="1" aria-hidden="true">
+        <div class="content-wrap">
+          <div class="text">
+            <h2>Sabor & Essência - Alimentação Saudável</h2>
+            <p>O Sabor & Essência é um empreendimento de alimentação que combina tradição e inovação para oferecer refeições nutritivas, saborosas e acessíveis. Nossa missão é promover saúde através da alimentação consciente.</p>
+            <ul class="bullet">
+              <li>Refeições preparadas com ingredientes frescos e selecionados</li>
+              <li>Cardápio diversificado para diferentes necessidades alimentares</li>
+              <li>Processos sustentáveis e respeito ao meio ambiente</li>
+            </ul>
+          </div>
+          <div class="icon-circle">
+            <i class="fas fa-utensils"></i>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: Problema que Resolvemos -->
+      <section class="slide" data-index="2" aria-hidden="true">
+        <div class="content-wrap">
+          <div class="text">
+            <h2>Que problema resolvemos?</h2>
+            <p>No mundo acelerado de hoje, as pessoas enfrentam dificuldades para manter uma alimentação equilibrada:</p>
+            <ul class="features">
+              <li><span class="feature-icon">⏰</span> Falta de tempo para preparar refeições saudáveis</li>
+              <li><span class="feature-icon">💰</span> Custo elevado de alimentação nutritiva</li>
+              <li><span class="feature-icon">🛒</span> Dificuldade em encontrar opções práticas e saudáveis</li>
+              <li><span class="feature-icon">🌱</span> Poucas alternativas para dietas específicas</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: Público-Alvo -->
+      <section class="slide" data-index="3" aria-hidden="true">
+        <div class="content-wrap">
+          <div class="text">
+            <h2>Quem é nosso público-alvo?</h2>
+            <p>Profissionais urbanos, famílias e estudantes que buscam praticidade sem abrir mão da qualidade nutricional.</p>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-number">25-45</div>
+                <div class="stat-label">Idade Principal</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">65%</div>
+                <div class="stat-label">Ativos Profissionalmente</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">R$ 2-6K</div>
+                <div class="stat-label">Renda Mensal</div>
+              </div>
+            </div>
+            <div class="highlight-box">
+              <p>Nosso cliente valoriza saúde, praticidade e sustentabilidade, buscando equilíbrio entre vida corrida e bem-estar.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: Missão, Visão e Valores -->
+      <section class="slide" data-index="4" aria-hidden="true">
+        <div class="content-wrap">
+          <div class="text">
+            <h2>Missão, Visão e Valores</h2>
+            <div class="work-grid">
+              <div class="work-card">
+                <div class="work-icon"><i class="fas fa-bullseye"></i></div>
+                <h3>Missão</h3>
+                <p>Oferecer alimentação saudável, acessível e saborosa que promova bem-estar e facilite a vida das pessoas, conectando-as com o prazer de comer bem.</p>
+              </div>
+              <div class="work-card">
+                <div class="work-icon"><i class="fas fa-eye"></i></div>
+                <h3>Visão</h3>
+                <p>Ser referência em alimentação consciente na região, expandindo para 5 unidades em 3 anos e tornando-nos a escolha preferida para refeições do dia a dia.</p>
+              </div>
+            </div>
+            <div class="highlight-text">
+              Nossos valores: Qualidade, Sustentabilidade, Acessibilidade, Inovação e Respeito às diferenças alimentares.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: Produtos e Serviços -->
+      <section class="slide" data-index="5" aria-hidden="true">
+        <div class="content-wrap">
+          <div class="text">
+            <h2>Nossos Produtos</h2>
+            <p>Linha completa de alimentos e refeições preparadas com foco em nutrição e sabor:</p>
+            <ul class="bullet">
+              <li>Marmitas fitness e funcionais</li>
+              <li>Saladas gourmet com ingredientes selecionados</li>
+              <li>Sopas e caldos nutritivos</li>
+              <li>Sucos naturais e detox</li>
+              <li>Lanches saudáveis para o dia a dia</li>
+            </ul>
+            <div class="community-stats">
+              <div class="stat-pill">Preços: R$ 12 - R$ 35</div>
+              <div class="stat-pill">Entregas: Grátis na região</div>
+              <div class="stat-pill">Dietas: Veg, Low-carb, Sem lactose</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: Estratégia de Divulgação -->
+      <section class="slide" data-index="6" aria-hidden="true">
+        <div class="content-wrap">
+          <div class="text">
+            <h2>Estratégia de Divulgação</h2>
+            <p>Plano de marketing multicanal para conectar com nosso público-alvo:</p>
+            <div class="culture-grid">
+              <div class="culture-card">
+                <div class="culture-icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3>Mídias Sociais</h3>
+                <p>Instagram e Facebook com conteúdo sobre nutrição e lifestyle saudável</p>
+              </div>
+              <div class="culture-card">
+                <div class="culture-icon"><i class="fas fa-handshake"></i></div>
+                <h3>Parcerias</h3>
+                <p>Colaborações com empresas, academias e escritórios</p>
+              </div>
+              <div class="culture-card">
+                <div class="culture-icon"><i class="fas fa-store"></i></div>
+                <h3>Degustações</h3>
+                <p>Eventos de degustação em locais estratégicos</p>
+              </div>
+              <div class="culture-card">
+                <div class="culture-icon"><i class="fas fa-truck"></i></div>
+                <h3>Delivery</h3>
+                <p>Parcerias com apps de entrega e serviço próprio</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 8: Diferenciais Competitivos -->
+      <section class="slide" data-index="7" aria-hidden="true">
+        <div class="content-wrap">
+          <div class="text">
+            <h2>O que nos diferencia?</h2>
+            <ul class="features">
+              <li><span class="feature-icon">🌿</span> Ingredientes orgânicos e sustentáveis</li>
+              <li><span class="feature-icon">👨‍🍳</span> Chef nutricionista supervisionando as receitas</li>
+              <li><span class="feature-icon">💚</span> Embalagens biodegradáveis e ecológicas</li>
+              <li><span class="feature-icon">🔄</span> Sistema de compostagem de resíduos</li>
+              <li><span class="feature-icon">💰</span> Preços 20% abaixo do mercado gourmet</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 9: Viabilidade e Recursos -->
+      <section class="slide" data-index="8" aria-hidden="true">
+        <div class="content-wrap">
+          <div class="text">
+            <h2>Viabilidade e Recursos</h2>
+            <p>Estrutura enxuta que permite operação com investimento moderado:</p>
+            <div class="timeline-container">
+              <div class="timeline-item">
+                <div class="year">Estrutura</div>
+                <div class="event">Cozinha profissional compacta - investimento: R$ 25.000</div>
+              </div>
+              <div class="timeline-item">
+                <div class="year">Comercialização</div>
+                <div class="event">E-commerce e delivery - investimento: R$ 8.000</div>
+              </div>
+              <div class="timeline-item">
+                <div class="year">Marketing</div>
+                <div class="event">Estratégia digital com orçamento mensal: R$ 1.500</div>
+              </div>
+            </div>
+            <div class="highlight-box">
+              <p>Previsão de break-even em 10 meses com vendas médias de 50 refeições/dia.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 10: Projeção de Crescimento -->
+      <section class="slide" data-index="9" aria-hidden="true">
+        <div class="content-wrap">
+          <div class="text">
+            <h2>Projeção de Crescimento</h2>
+            <p>Expansão gradual baseada em resultados e fidelização de clientes:</p>
+            <div class="work-grid">
+              <div class="work-card">
+                <h3>Primeiro Ano</h3>
+                <ul class="bullet">
+                  <li>Estabelecimento da marca</li>
+                  <li>100 clientes semanais</li>
+                  <li>Faturamento: R$ 15.000/mês</li>
+                </ul>
+              </div>
+              <div class="work-card">
+                <h3>Terceiro Ano</h3>
+                <ul class="bullet">
+                  <li>Expansão para 2 novas unidades</li>
+                  <li>300 clientes semanais</li>
+                  <li>Faturamento: R$ 45.000/mês</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 11: Conclusão -->
+      <section class="slide" data-index="10" aria-hidden="true">
+        <div class="content-wrap">
+          <div class="text">
+            <h2>Por que investir no Sabor & Essência?</h2>
+            <ul class="features">
+              <li><span class="feature-icon">📈</span> Mercado em crescimento: alimentação saudável</li>
+              <li><span class="feature-icon">🎯</span> Proposta única: sabor + saúde + sustentabilidade</li>
+              <li><span class="feature-icon">💡</span> Equipe especializada em nutrição e gastronomia</li>
+              <li><span class="feature-icon">🌍</span> Alinhamento com tendências de consumo consciente</li>
+            </ul>
+            <div class="highlight-text">
+              O Sabor & Essência não é apenas um negócio de alimentação - é um movimento por uma relação mais saudável e prazerosa com a comida.
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- CONTROLES -->
+    <div class="controls" role="toolbar" aria-label="Controles do carrossel">
+      <button id="prevBtn" aria-label="Anterior">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="dots" id="dots" role="tablist" aria-label="Navegação por slides"></div>
+      <button id="nextBtn" aria-label="Próximo">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const dotsWrap = document.getElementById('dots');
+      const TRANS_MS = 700;
+
+      let current = 0;
+      let isAnimating = false;
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchMoved = false;
+      const THRESHOLD = 40;
+
+      // Build dots navigation
+      slides.forEach((s, i) => {
+        const d = document.createElement('button');
+        d.className = 'dot';
+        d.dataset.index = i;
+        d.setAttribute('aria-label', `Ir para slide ${i+1}`);
+        if (i === 0) d.classList.add('active');
+        dotsWrap.appendChild(d);
+      });
+      const dots = Array.from(document.querySelectorAll('.dot'));
+
+      // Initialize slides
+      slides.forEach((s, i) => {
+        if (i === 0) {
+          s.classList.add('active');
+          s.style.transform = 'translateX(0)';
+          s.style.opacity = '1';
+          s.setAttribute('aria-hidden', 'false');
+        } else {
+          s.style.transform = 'translateX(100%)';
+          s.style.opacity = '0';
+          s.setAttribute('aria-hidden', 'true');
+        }
+      });
+
+      // Update dots indicator
+      function updateDots(idx) {
+        dots.forEach(d => d.classList.toggle('active', Number(d.dataset.index) === idx));
+      }
+
+      // Main slide transition function
+      function goTo(nextIdx) {
+        if (isAnimating || nextIdx === current) return;
+        if (nextIdx < 0) nextIdx = slides.length - 1;
+        if (nextIdx >= slides.length) nextIdx = 0;
+
+        isAnimating = true;
+        const from = slides[current];
+        const to = slides[nextIdx];
+        const direction = (nextIdx > current || (current === slides.length - 1 && nextIdx === 0)) ? 'next' : 'prev';
+
+        // Prepare incoming slide
+        to.style.transition = 'none';
+        to.style.opacity = '1';
+        to.style.transform = direction === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
+        to.classList.add('preparing');
+        to.style.zIndex = '3';
+
+        // Force reflow to ensure styles are applied
+        void to.offsetWidth;
+
+        // Apply transitions
+        from.style.transition = `transform ${TRANS_MS}ms cubic-bezier(0.16, 1, 0.3, 1), opacity ${TRANS_MS}ms ease`;
+        to.style.transition = `transform ${TRANS_MS}ms cubic-bezier(0.16, 1, 0.3, 1), opacity ${TRANS_MS}ms ease`;
+
+        // Animate slides
+        from.style.transform = direction === 'next' ? 'translateX(-100%)' : 'translateX(100%)';
+        from.style.opacity = '0';
+
+        to.style.transform = 'translateX(0)';
+        to.style.opacity = '1';
+
+        let finished = false;
+        function done() {
+          if (finished) return;
+          finished = true;
+
+          // Clean up after animation
+          from.classList.remove('active');
+          from.style.transition = '';
+          from.style.transform = '';
+          from.style.opacity = '';
+          from.style.zIndex = '';
+          from.setAttribute('aria-hidden', 'true');
+
+          to.classList.add('active');
+          to.classList.remove('preparing');
+          to.style.transition = '';
+          to.style.transform = '';
+          to.style.opacity = '';
+          to.style.zIndex = '';
+          to.setAttribute('aria-hidden', 'false');
+
+          current = nextIdx;
+          updateDots(current);
+          isAnimating = false;
+        }
+
+        // Ensure animation completes even if interrupted
+        to.addEventListener('transitionend', done, { once: true });
+        setTimeout(done, TRANS_MS + 100);
+      }
+
+      // Button controls
+      prevBtn.addEventListener('click', () => goTo(current - 1));
+      nextBtn.addEventListener('click', () => goTo(current + 1));
+      
+      // Dot navigation
+      dots.forEach(d => d.addEventListener('click', (e) => {
+        e.preventDefault();
+        goTo(Number(e.currentTarget.dataset.index));
+      }));
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          goTo(current + 1);
+        }
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          goTo(current - 1);
+        }
+        if (e.key === 'Home') {
+          e.preventDefault();
+          goTo(0);
+        }
+        if (e.key === 'End') {
+          e.preventDefault();
+          goTo(slides.length - 1);
+        }
+      });
+
+      // Touch/swipe support for mobile devices
+      document.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchMoved = false;
+      }, { passive: true });
+
+      document.addEventListener('touchmove', (e) => {
+        touchMoved = true;
+      }, { passive: true });
+
+      document.addEventListener('touchend', (e) => {
+        if (!touchMoved || !e.changedTouches) return;
+        
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const dx = touchEndX - touchStartX;
+        const dy = Math.abs(touchEndY - touchStartY);
+        
+        // Only trigger swipe if horizontal movement is significant and dominant
+        if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > dy) {
+          if (dx < 0) {
+            // Swipe left - next slide
+            goTo(current + 1);
+          } else {
+            // Swipe right - previous slide
+            goTo(current - 1);
+          }
+        }
+      }, { passive: true });
+
+      // Accessibility improvements
+      slides.forEach((slide, index) => {
+        slide.setAttribute('role', 'region');
+        slide.setAttribute('aria-labelledby', `slide-title-${index}`);
+        const title = slide.querySelector('h2');
+        if (title) {
+          title.id = `slide-title-${index}`;
+        }
+      });
+
+      // Auto-focus content when slide changes
+      function focusSlideContent() {
+        const activeSlide = slides[current];
+        const focusable = activeSlide.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusable) {
+          focusable.focus();
+        } else {
+          activeSlide.focus();
+        }
+      }
+
+      // Observe slide changes to manage focus
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'class' && 
+              mutation.target.classList.contains('active') && 
+              !mutation.oldValue.includes('active')) {
+            focusSlideContent();
+          }
+        });
+      });
+
+      slides.forEach(slide => {
+        observer.observe(slide, { 
+          attributes: true, 
+          attributeOldValue: true,
+          attributeFilter: ['class']
+        });
+      });
+    });
+  </script>
+</body>
+</html>
